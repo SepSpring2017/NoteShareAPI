@@ -1,0 +1,31 @@
+node_modules/
+.DS_Store
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+*.publishproj
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+bin
+obj
+*.userprefs
+*.user
+
+#NuGet
+packages
+!packages/repositories.config
