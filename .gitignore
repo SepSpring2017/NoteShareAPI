@@ -1,6 +1,7 @@
 node_modules/
 .DS_Store
 .vscode
+NoteShare.db
 
 # Windows image file caches
 Thumbs.db
