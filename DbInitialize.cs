@@ -11,24 +11,25 @@ namespace NoteShareAPI
         {
             context.Database.EnsureCreated();
 
-            if (context.Subjects.Any())
-                return;
-
-            var subjects = new List<Subject>
+            if (!context.Subjects.Any())
             {
-                new Subject
+                var subjects = new List<Subject>
                 {
-                    Name = "Software Engineering Practice",
-                    SubjectId = 48440
-                },
-                new Subject
-                {
-                    Name = "Software Architecture",
-                    SubjectId = 48433
-                }
-            };
+                    new Subject
+                    {
+                        Name = "Software Engineering Practice",
+                        SubjectId = 48440
+                    },
+                    new Subject
+                    {
+                        Name = "Software Architecture",
+                        SubjectId = 48433
+                    }
+                };
 
-            context.Subjects.AddRange(subjects);
+                context.Subjects.AddRange(subjects);
+            }
+
             context.SaveChanges();
         }
     }
