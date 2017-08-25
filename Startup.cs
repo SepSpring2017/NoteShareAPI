@@ -27,15 +27,19 @@ namespace NoteShareAPI
         {
             services.AddMvc();
 
+            services.AddDbContext<NoteContext>();
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<NoteContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddScoped<IDbInitialize, DbInitialize>();
 
             services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/LogIn");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IDbInitialize initializer)
         {
             if (env.IsDevelopment())
             {
@@ -44,11 +48,9 @@ namespace NoteShareAPI
 
             app.UseMvc();
 
+            initializer.Seed();
+
             app.UseAuthentication();
-
-            var context = new NoteContext();
-
-            DbInitialize.Seed(context);
         }
     }
 }

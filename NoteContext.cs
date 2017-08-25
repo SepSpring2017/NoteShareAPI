@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NoteShareAPI.Entities;
 
 namespace NoteShareAPI
 {
-    public class NoteContext : DbContext
+    public class NoteContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Document> Documents { get; set; }
