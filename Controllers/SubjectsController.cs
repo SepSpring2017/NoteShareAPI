@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NoteShareAPI.Entities;
 
@@ -10,7 +11,7 @@ namespace NoteShareAPI.Controllers
     [Route("api/[controller]")]
     public class SubjectsController : Controller
     {
-        NoteContext db = new NoteContext();
+        private readonly NoteContext db = new NoteContext();
 
         // GET api/values
         [HttpGet]
@@ -21,12 +22,16 @@ namespace NoteShareAPI.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public Subject Get(int id)
+        public ActionResult Get(int id)
         {
-            return db.Subjects.FirstOrDefault(s => s.SubjectId == id);
+            var subject = db.Subjects.FirstOrDefault(s => s.SubjectId == id);
+            if (subject != null)
+                return Ok(subject);
+            return NotFound();
         }
 
         // POST api/values
+        [Authorize]
         [HttpPost]
         public void Post(Subject s)
         {
@@ -39,15 +44,33 @@ namespace NoteShareAPI.Controllers
         }
 
         // PUT api/values/5
+        [Authorize]
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public ActionResult Put(int id, Subject s)
         {
+            var existingSubject = db.Subjects.FirstOrDefault(subject => subject.SubjectId == id);
+            if (existingSubject != null)
+            {
+                existingSubject.Name = s.Name;
+                db.SaveChanges();
+                return Ok(existingSubject);
+            }
+            return BadRequest("No existing subject found.");
         }
 
         // DELETE api/values/5
+        [Authorize]
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
+            var existingSubject = db.Subjects.FirstOrDefault(subject => subject.SubjectId == id);
+            if (existingSubject != null)
+            {
+                db.Subjects.Remove(existingSubject);
+                db.SaveChanges();
+                return Ok();
+            }
+            return BadRequest("No existing subject found.");
         }
     }
 }
