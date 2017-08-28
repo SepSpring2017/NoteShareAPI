@@ -47,10 +47,11 @@ namespace NoteShareAPI
             }
 
             app.UseMvc();
+            app.UseAuthentication();
+
+            app.UseFileServer(enableDirectoryBrowsing: true);
 
             initializer.Seed();
-
-            app.UseAuthentication();
         }
     }
 }
