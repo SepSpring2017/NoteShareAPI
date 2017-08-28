@@ -27,7 +27,7 @@ namespace NoteShareAPI.Controllers
             var subject = db.Subjects.FirstOrDefault(s => s.SubjectId == id);
             if (subject != null)
                 return Ok(subject);
-            return NotFound();
+            return NotFound(new { message = "No subject found for that Id" });
         }
 
         // POST api/values
@@ -55,7 +55,7 @@ namespace NoteShareAPI.Controllers
                 db.SaveChanges();
                 return Ok(existingSubject);
             }
-            return BadRequest("No existing subject found.");
+            return BadRequest(new { message = "No subject found for that Id" });
         }
 
         // DELETE api/values/5
@@ -70,7 +70,7 @@ namespace NoteShareAPI.Controllers
                 db.SaveChanges();
                 return Ok();
             }
-            return BadRequest("No existing subject found.");
+            return BadRequest(new { message = "No subject found for that Id" });
         }
     }
 }
