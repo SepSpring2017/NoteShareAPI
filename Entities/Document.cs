@@ -7,6 +7,7 @@ namespace NoteShareAPI.Entities
 		public Document()
 		{
 			ID = Guid.NewGuid().ToString();
+			UploadDate = DateTime.UtcNow;
 		}
 
 		public string ID { get; set; }
