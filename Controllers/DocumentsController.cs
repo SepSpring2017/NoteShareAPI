@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NoteShareAPI.Entities;
 
@@ -16,11 +17,13 @@ namespace NoteShareAPI.Controllers
     {
         private readonly NoteContext db;
         private readonly IHostingEnvironment env;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public DocumentsController(NoteContext context, IHostingEnvironment host)
+        public DocumentsController(NoteContext context, IHostingEnvironment host, UserManager<ApplicationUser> manager)
         {
             db = context;
             env = host;
+            userManager = manager;
         }
 
         // GET api/values
@@ -64,7 +67,8 @@ namespace NoteShareAPI.Controllers
                     var document = new Document
                     {
                         FileName = fileName,
-                        DocumentType = file.ContentType
+                        DocumentType = file.ContentType,
+                        Owner = userManager.FindByNameAsync(User.Identity.Name).Result
                     };
                     db.Documents.Add(document);
                     db.SaveChanges();
