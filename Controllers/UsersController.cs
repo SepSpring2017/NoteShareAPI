@@ -9,7 +9,6 @@ using NoteShareAPI.Entities;
 
 namespace NoteShareAPI.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
@@ -21,6 +20,7 @@ namespace NoteShareAPI.Controllers
         }
 
         // GET api/values
+        [Authorize]
         [HttpGet]
         public IEnumerable<ApplicationUser> Get()
         {
@@ -28,6 +28,7 @@ namespace NoteShareAPI.Controllers
         }
 
         // GET api/values/5
+        [Authorize]
         [HttpGet("{id}")]
         public ActionResult Get(string id)
         {
@@ -38,7 +39,6 @@ namespace NoteShareAPI.Controllers
         }
 
         // POST api/values
-        [Authorize]
         [HttpPost]
         public ActionResult Post(string email, string password)
         {
