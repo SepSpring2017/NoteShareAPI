@@ -13,5 +13,4 @@ This will serve as the Web API for the [NoteShare web app](https://github.com/Se
 ## Running this on your machine
 
 1. Install packages with `dotnet restore`
-2. Run migrations and create database with `dotnet ef database update`
-3. Run the development server with `dotnet run`
+2. Run the development server with `dotnet run`
