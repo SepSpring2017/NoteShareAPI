@@ -49,7 +49,7 @@ namespace NoteShareAPI
             app.UseMvc();
             app.UseAuthentication();
 
-            app.UseFileServer(enableDirectoryBrowsing: true);
+            app.UseFileServer();
 
             initializer.Seed();
         }
