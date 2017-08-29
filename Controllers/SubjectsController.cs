@@ -41,6 +41,7 @@ namespace NoteShareAPI.Controllers
                 Name = s.Name
             };
             db.Subjects.Add(subject);
+            db.SaveChanges();
         }
 
         // PUT api/values/5
