@@ -45,32 +45,32 @@ namespace NoteShareAPI.Controllers
         [HttpPost]
         public ActionResult Post(IFormFile file)
         {
-            var document = new Document
-            {
-                FileName = file.FileName,
-                DocumentType = file.ContentType
-            };
-
             try 
             {
                 var uploadDirectory = $"{env.WebRootPath}/Uploads";
                 if (!Directory.Exists(uploadDirectory))
                     Directory.CreateDirectory(uploadDirectory);
-
-                var allFiles = Directory.GetFiles(uploadDirectory).ToList();
-                var fileName = Services.GetUniqueSlug(file.FileName, allFiles);
-                var filePath = Path.Combine(uploadDirectory, fileName);
                 if (file.Length > 0)
                 {
+                    var allFiles = Directory.GetFiles(uploadDirectory).ToList();
+                    var fileName = Services.GetUniqueSlug(file.FileName, allFiles);
+                    var filePath = Path.Combine(uploadDirectory, fileName);
+
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         file.CopyToAsync(stream);
                     }
-                }
 
-                db.Documents.Add(document);
-                db.SaveChanges();
-                return Ok(new { file = $"/Uploads/{fileName}"});
+                    var document = new Document
+                    {
+                        FileName = fileName,
+                        DocumentType = file.ContentType
+                    };
+                    db.Documents.Add(document);
+                    db.SaveChanges();
+                    return Ok(new { file = $"/Uploads/{fileName}"});
+                }
+                return BadRequest();
             } catch (Exception e)
             {
                 return StatusCode(500, e.Message);
