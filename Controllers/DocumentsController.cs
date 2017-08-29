@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NoteShareAPI.Entities;
 
@@ -11,7 +14,14 @@ namespace NoteShareAPI.Controllers
     [Route("api/[controller]")]
     public class DocumentsController : Controller
     {
-        private readonly NoteContext db = new NoteContext();
+        private readonly NoteContext db;
+        private readonly IHostingEnvironment env;
+
+        public DocumentsController(NoteContext context, IHostingEnvironment host)
+        {
+            db = context;
+            env = host;
+        }
 
         // GET api/values
         [HttpGet]
@@ -33,15 +43,38 @@ namespace NoteShareAPI.Controllers
         // POST api/values
         [Authorize]
         [HttpPost]
-        public void Post(Document d)
+        public ActionResult Post(IFormFile file)
         {
             var document = new Document
             {
-                FileName = d.FileName,
-                DocumentType = d.DocumentType
+                FileName = file.FileName,
+                DocumentType = file.ContentType
             };
-            db.Documents.Add(document);
-            db.SaveChanges();
+
+            try 
+            {
+                var uploadDirectory = $"{env.WebRootPath}/Uploads";
+                if (!Directory.Exists(uploadDirectory))
+                    Directory.CreateDirectory(uploadDirectory);
+
+                var allFiles = Directory.GetFiles(uploadDirectory).ToList();
+                var fileName = Services.GetUniqueSlug(file.FileName, allFiles);
+                var filePath = Path.Combine(uploadDirectory, fileName);
+                if (file.Length > 0)
+                {
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyToAsync(stream);
+                    }
+                }
+
+                db.Documents.Add(document);
+                db.SaveChanges();
+                return Ok(new { file = $"/Uploads/{fileName}"});
+            } catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         // PUT api/values/5
