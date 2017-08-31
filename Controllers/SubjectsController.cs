@@ -11,7 +11,12 @@ namespace NoteShareAPI.Controllers
     [Route("api/[controller]")]
     public class SubjectsController : Controller
     {
-        private readonly NoteContext db = new NoteContext();
+        private readonly NoteContext db;
+
+        public SubjectsController(NoteContext context)
+        {
+            db = context;
+        }
 
         // GET api/values
         [HttpGet]
