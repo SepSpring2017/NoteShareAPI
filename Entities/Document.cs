@@ -14,6 +14,7 @@ namespace NoteShareAPI.Entities
 		public DateTime UploadDate { get; set; }
 		public string FileName { get; set; }
         public string DocumentType { get; set; }
+		public string DocumentName { get; set; }
 		public ApplicationUser Owner { get; set; }
 	}
 }
