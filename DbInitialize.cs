@@ -25,8 +25,8 @@ namespace NoteShareAPI
             {
                 var newUser = new ApplicationUser
                 {
-                    UserName = "Admin",
-                    Email = "mhcodner@gmail.com"
+                    UserName = "test@test.com",
+                    Email = "test@test.com"
                 };
                 _manager.CreateAsync(newUser, "J8cG!FjD");
             }
