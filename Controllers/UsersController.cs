@@ -38,21 +38,6 @@ namespace NoteShareAPI.Controllers
             return NotFound(new { message = "No user found for that Id" });
         }
 
-        // POST api/values
-        [HttpPost]
-        public ActionResult Post(string email, string password)
-        {
-            var newUser = new ApplicationUser
-            {
-                UserName = email,
-                Email = email
-            };
-            var result = _manager.CreateAsync(newUser, password);
-            if (result.IsCompletedSuccessfully)
-                return Ok();
-            return BadRequest(result.ToString());
-        }
-
         // PUT api/values/5
         [Authorize]
         [HttpPut("{id}")]
