@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -36,7 +34,6 @@ namespace NoteShareAPI
                 .AddDefaultTokenProviders();
 
             services.AddScoped<IDbInitialize, DbInitialize>();
-            services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
 
             services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/LogIn");
         }
