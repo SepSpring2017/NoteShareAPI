@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNet.Security.OAuth.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using NoteShareAPI.Entities;
 
 namespace NoteShareAPI.Controllers
 {
+    [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
@@ -20,7 +22,6 @@ namespace NoteShareAPI.Controllers
         }
 
         // GET api/values
-        [Authorize]
         [HttpGet]
         public IEnumerable<ApplicationUser> Get()
         {
@@ -28,7 +29,6 @@ namespace NoteShareAPI.Controllers
         }
 
         // GET api/values/5
-        [Authorize]
         [HttpGet("{id}")]
         public ActionResult Get(string id)
         {
@@ -40,6 +40,7 @@ namespace NoteShareAPI.Controllers
 
         // POST api/values
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult Post(string email, string password)
         {
             var newUser = new ApplicationUser
@@ -54,7 +55,6 @@ namespace NoteShareAPI.Controllers
         }
 
         // PUT api/values/5
-        [Authorize]
         [HttpPut("{id}")]
         public ActionResult Put(string userId, List<Subject> subjects)
         {
@@ -69,7 +69,6 @@ namespace NoteShareAPI.Controllers
         }
 
         // DELETE api/values/5
-        [Authorize]
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
