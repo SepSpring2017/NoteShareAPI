@@ -6,6 +6,8 @@ using AspNet.Security.OpenIdConnect.Primitives;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -16,12 +18,14 @@ namespace NoteShareAPI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment _env { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -60,15 +64,28 @@ namespace NoteShareAPI
                 options.AllowPasswordFlow();
 
                 // During development, you can disable the HTTPS requirement.
-                options.DisableHttpsRequirement();
+                if (_env.IsDevelopment())
+                    options.DisableHttpsRequirement();
             });
+
+            if (_env.IsProduction())
+            {
+                services.Configure<MvcOptions>(options =>
+                {
+                    options.Filters.Add(new RequireHttpsAttribute());
+                });
+            }
 
             services.AddAuthentication()
                 .AddOAuthValidation();
 
             services.AddScoped<IDbInitialize, DbInitialize>();
-
-            services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/LogIn");
+            
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireUppercase = false;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,6 +94,11 @@ namespace NoteShareAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                var options = new RewriteOptions().AddRedirectToHttps();
+                app.UseRewriter(options);
             }
 
             app.UseAuthentication();
