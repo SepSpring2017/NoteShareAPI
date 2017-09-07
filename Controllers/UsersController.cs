@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NoteShareAPI.Entities;
+using NoteShareAPI.Models;
 
 namespace NoteShareAPI.Controllers
 {
@@ -41,14 +42,19 @@ namespace NoteShareAPI.Controllers
         // POST api/values
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Post(string email, string password)
+        public ActionResult Post([FromBody] Credentials credentials)
         {
+            if (!ModelState.IsValid)
+            {
+                var messages = ModelState.Values.Select(e => e.Errors.Select(error => error.ErrorMessage).First());
+                return BadRequest(new { Message = String.Join(" ", messages) });
+            }
             var newUser = new ApplicationUser
             {
-                UserName = email,
-                Email = email
+                UserName = credentials.Email,
+                Email = credentials.Email
             };
-            var result = _manager.CreateAsync(newUser, password);
+            var result = _manager.CreateAsync(newUser, credentials.Password);
             if (result.IsCompletedSuccessfully)
                 return Ok();
             return BadRequest(result.ToString());

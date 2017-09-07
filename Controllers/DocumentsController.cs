@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NoteShareAPI.Entities;
+using NoteShareAPI.Models;
 
 namespace NoteShareAPI.Controllers
 {
@@ -46,29 +47,38 @@ namespace NoteShareAPI.Controllers
         // POST api/values
         [Authorize]
         [HttpPost]
-        public ActionResult Post(IFormFile file)
+        public ActionResult Post(UploadModel upload)
         {
+            if (!ModelState.IsValid)
+            {
+                var messages = ModelState.Values.Select(e => e.Errors.Select(error => error.ErrorMessage).First());
+                return BadRequest(new { Message = String.Join(" ", messages) });
+            }
             try 
             {
                 var uploadDirectory = $"{env.WebRootPath}/Uploads";
                 if (!Directory.Exists(uploadDirectory))
                     Directory.CreateDirectory(uploadDirectory);
-                if (file.Length > 0)
+                if (upload.File.Length > 0)
                 {
                     var allFiles = Directory.GetFiles(uploadDirectory).ToList();
-                    var fileName = Services.GetUniqueSlug(file.FileName, allFiles);
+                    var fileName = Services.GetUniqueSlug(upload.File.FileName, allFiles);
                     var filePath = Path.Combine(uploadDirectory, fileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        file.CopyToAsync(stream);
+                        upload.File.CopyToAsync(stream);
                     }
+
+                    var subject = db.Subjects.FirstOrDefault(s => s.SubjectId == upload.Subject.SubjectId);
 
                     var document = new Document
                     {
                         FileName = fileName,
-                        DocumentType = file.ContentType,
-                        Owner = userManager.FindByNameAsync(User.Identity.Name).Result
+                        DocumentName = upload.DocumentName,
+                        DocumentType = upload.DocumentType,
+                        Owner = userManager.FindByNameAsync(User.Identity.Name).Result,
+                        Subject = subject
                     };
                     db.Documents.Add(document);
                     db.SaveChanges();
