@@ -54,10 +54,10 @@ namespace NoteShareAPI.Controllers
                 UserName = credentials.Email,
                 Email = credentials.Email
             };
-            var result = _manager.CreateAsync(newUser, credentials.Password);
-            if (result.IsCompletedSuccessfully)
+            var result = _manager.CreateAsync(newUser, credentials.Password).Result;
+            if (result.Succeeded)
                 return Ok();
-            return BadRequest(result.ToString());
+            return BadRequest(new { Message = result.ToString() });
         }
 
         // PUT api/values/5
@@ -68,10 +68,10 @@ namespace NoteShareAPI.Controllers
             if (user == null)
                 return BadRequest(new { message = "No user found for that Id" });
             user.subjects = subjects;
-            var result = _manager.UpdateAsync(user);
-            if (result.IsCompletedSuccessfully)
+            var result = _manager.UpdateAsync(user).Result;
+            if (result.Succeeded)
                 return Ok();
-            return BadRequest(result.ToString());
+            return BadRequest(new { Message = result.ToString() });
         }
 
         // DELETE api/values/5
@@ -81,8 +81,8 @@ namespace NoteShareAPI.Controllers
             var user = _manager.FindByIdAsync(id).Result;
             if (user == null)
                 return BadRequest(new { message = "No user found for that Id" });
-            var result = _manager.DeleteAsync(user);
-            if (result.IsCompletedSuccessfully)
+            var result = _manager.DeleteAsync(user).Result;
+            if (result.Succeeded)
                 return Ok();
             return BadRequest();
         }
