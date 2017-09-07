@@ -4,6 +4,9 @@ mono: none
 dotnet: 2.0.0
 
 install:
+- dotnet add package --version 2.0.0-* --source https://www.myget.org/F/aspnet-contrib/api/v3/index.json OpenIddict
+- dotnet add package --version 2.0.0-* --source https://www.myget.org/F/aspnet-contrib/api/v3/index.json OpenIddict.EntityFrameworkCore
+- dotnet add package --version 2.0.0-* --source https://www.myget.org/F/aspnet-contrib/api/v3/index.json OpenIddict.Mvc
 - dotnet restore
 
 script:
