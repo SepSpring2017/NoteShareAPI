@@ -47,7 +47,7 @@ namespace NoteShareAPI.Controllers
         // POST api/values
         [Authorize]
         [HttpPost]
-        public ActionResult Post(UploadModel upload)
+        public ActionResult Post([FromBody] UploadModel upload)
         {
             if (!ModelState.IsValid)
             {
