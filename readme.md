@@ -22,7 +22,11 @@ This will serve as the Web API for the [NoteShare web app](https://github.com/Se
 ```http
 POST /api/Users HTTP/1.1
 Content-Type: application/json
-{ Email:"email@domain.com", Password:"p@ssword123" }
+
+{
+  Email:"email@domain.com",
+  Password:"p@ssword123"
+}
 ```
 This endpoint will register users when you provide a valid JSON object that matches our [Credentials model](https://github.com/SepSpring2017/NoteShareAPI/blob/master/Models/Credentials.cs).
 
@@ -31,6 +35,7 @@ This endpoint will register users when you provide a valid JSON object that matc
 ```http
 POST /connect/token HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
+
 grant_type=password&username=test%40test.com&password=J8cG!FjD
 ```
 If login is successful this will return an access token in the following format. This token can be used to make authenticated requests to the API endpoints that have an `[Authorize]` attribute.
@@ -41,3 +46,22 @@ If login is successful this will return an access token in the following format.
   "expires_in": 3600
 }
 ```
+
+### Document upload
+
+```http
+POST /api/Documents HTTP/1.1
+Content-Type: application/json
+
+{
+  DocumentName: "Quiz 1 answers",
+  DocumentType: "Quiz Answers",
+  Subject: {
+    SubjectId: 48440,
+    Name: "Software Engineering Practice"
+  },
+  File: /* File Contents */
+}
+```
+
+`DocumentName` and `File` will be provided by the user. `Subject` and `DocumentType` will be chosen from a dropdown menu provided by us. The JSON provided needs to match the [UploadModel](https://github.com/SepSpring2017/NoteShareAPI/blob/master/Models/UploadModel.cs) for the API to accept it.
