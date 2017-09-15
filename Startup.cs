@@ -101,6 +101,10 @@ namespace NoteShareAPI
                 app.UseRewriter(options);
             }
 
+            app.UseCors(
+                options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+            );
+
             app.UseAuthentication();
             app.UseMvc();
 
