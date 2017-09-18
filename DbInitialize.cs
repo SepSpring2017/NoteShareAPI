@@ -33,21 +33,8 @@ namespace NoteShareAPI
 
             if (!_context.Subjects.Any())
             {
-                var subjects = new List<Subject>
-                {
-                    new Subject
-                    {
-                        Name = "Software Engineering Practice",
-                        SubjectId = 48440
-                    },
-                    new Subject
-                    {
-                        Name = "Software Architecture",
-                        SubjectId = 48433
-                    }
-                };
-
-                _context.Subjects.AddRange(subjects);
+                var scraper = new SubjectScraper(_context);
+                scraper.Start();
             }
 
             _context.SaveChanges();
