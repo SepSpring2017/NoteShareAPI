@@ -22,24 +22,32 @@ namespace NoteShareAPI.Controllers
             _manager = manager;
         }
 
-        // GET api/values
         [HttpGet]
-        public IEnumerable<ApplicationUser> Get()
+        public IEnumerable<UserDTO> Get()
         {
-            return _manager.Users.ToList();
+            var allUsers = _manager.Users.ToList();
+            var DTOList = new List<UserDTO>();
+            foreach (var user in allUsers)
+                DTOList.Add(new UserDTO(user));
+            return DTOList;
         }
 
-        // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult Get(string id)
         {
             var user = _manager.FindByIdAsync(id).Result;
             if (user != null)
-                return Ok(user);
+                return Ok(new UserDTO(user));
             return NotFound(new { message = "No user found for that Id" });
         }
 
-        // POST api/values
+        [HttpGet("current")]
+        public ActionResult GetCurrent()
+        {
+            var id = _manager.GetUserId(User);
+            return Get(id);
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public ActionResult Post([FromBody] Credentials credentials)
@@ -60,7 +68,6 @@ namespace NoteShareAPI.Controllers
             return BadRequest(new { Message = result.ToString() });
         }
 
-        // PUT api/values/5
         [HttpPut("{id}")]
         public ActionResult Put(string userId, List<Subject> subjects)
         {
@@ -74,7 +81,6 @@ namespace NoteShareAPI.Controllers
             return BadRequest(new { Message = result.ToString() });
         }
 
-        // DELETE api/values/5
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
