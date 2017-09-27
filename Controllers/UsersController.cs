@@ -22,6 +22,7 @@ namespace NoteShareAPI.Controllers
             _manager = manager;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IEnumerable<UserDTO> Get()
         {
@@ -64,7 +65,10 @@ namespace NoteShareAPI.Controllers
             };
             var result = _manager.CreateAsync(newUser, credentials.Password).Result;
             if (result.Succeeded)
+            {
+                _manager.AddToRoleAsync(newUser, "Student");
                 return Ok();
+            }
             return BadRequest(new { Message = result.ToString() });
         }
 
