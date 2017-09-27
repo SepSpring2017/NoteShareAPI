@@ -9,6 +9,8 @@ namespace NoteShareAPI
         public NoteContext(DbContextOptions options)
             : base(options) { }
         
+        public NoteContext(){ }
+
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Document> Documents { get; set; }
         
