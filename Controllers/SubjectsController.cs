@@ -28,7 +28,8 @@ namespace NoteShareAPI.Controllers
         [HttpGet("search/{query}")]
         public IEnumerable<Subject> Search(string query)
         {
-            return Get().Where(s => s.Name.Contains(query) || s.SubjectId.ToString().Contains(query));
+            query = query.ToLower();
+            return Get().Where(s => s.Name.ToLower().Contains(query) || s.SubjectId.ToString().Contains(query));
         }
 
         // GET api/values/5
