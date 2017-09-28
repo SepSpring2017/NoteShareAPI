@@ -22,7 +22,13 @@ namespace NoteShareAPI.Controllers
         [HttpGet]
         public IEnumerable<Subject> Get()
         {
-            return db.Subjects.ToList();
+            return db.Subjects.ToList().OrderBy(s => s.Name);
+        }
+
+        [HttpGet("search/{query}")]
+        public IEnumerable<Subject> Search(string query)
+        {
+            return Get().Where(s => s.Name.Contains(query) || s.SubjectId.ToString().Contains(query));
         }
 
         // GET api/values/5
