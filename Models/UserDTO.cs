@@ -8,20 +8,22 @@ namespace NoteShareAPI.Models
     {
         public UserDTO(ApplicationUser u)
         {
-            this.Email = u.Email;
-            this.Id = u.Id;
-            this.Subjects = u.subjects;
-            this.Roles = new List<RoleDTO>();
+            this.email = u.Email;
+            this.id = u.Id;
+            this.subjects = u.subjects;
+            this.roles = new List<RoleDTO>();
 
             var db = new NoteContext();
             var userRoles = db.UserRoles.Where(r => r.UserId == u.Id).ToList().Select(r => r.RoleId);
             foreach (var r in db.Roles.Where(role => userRoles.Contains(role.Id)).ToList())
-                this.Roles.Add(new RoleDTO(r));
+                this.roles.Add(new RoleDTO(r));
         }
 
-        public string Id { get; set; }
-        public string Email { get; set; }
-        public List<Subject> Subjects { get; set; }
-        public List<RoleDTO> Roles { get; set; }
+        public UserDTO() {}
+
+        public string id { get; set; }
+        public string email { get; set; }
+        public List<Subject> subjects { get; set; }
+        public List<RoleDTO> roles { get; set; }
     }
 }

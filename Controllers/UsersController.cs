@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AspNet.Security.OAuth.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using NoteShareAPI.Entities;
 using NoteShareAPI.Models;
@@ -16,10 +17,12 @@ namespace NoteShareAPI.Controllers
     public class UsersController : Controller
     {
         private readonly UserManager<ApplicationUser> _manager;
+        private readonly NoteContext _db;
 
-        public UsersController(UserManager<ApplicationUser> manager)
+        public UsersController(UserManager<ApplicationUser> manager, NoteContext db)
         {
             _manager = manager;
+            _db = db;
         }
 
         [Authorize(Roles = "Admin")]
@@ -72,16 +75,34 @@ namespace NoteShareAPI.Controllers
             return BadRequest(new { Message = result.ToString() });
         }
 
-        [HttpPut("{id}")]
-        public ActionResult Put(string userId, List<Subject> subjects)
+        [HttpPut("{userId}")]
+        public ActionResult Put(string userId, [FromBody] UserDTO u)
         {
             var user = _manager.FindByIdAsync(userId).Result;
             if (user == null)
                 return BadRequest(new { message = "No user found for that Id" });
-            user.subjects = subjects;
+            user.subjects = u.subjects;
             var result = _manager.UpdateAsync(user).Result;
             if (result.Succeeded)
                 return Ok();
+            return BadRequest(new { Message = result.ToString() });
+        }
+
+        [HttpPut("addsubject")]
+        public ActionResult Put([FromBody]int subjectId)
+        {
+            var user = _manager.GetUserAsync(User).Result;
+            if (user.subjects == null)
+                user.subjects = new List<Subject>();
+
+            var subject = _db.Subjects.FirstOrDefault(s => s.SubjectId == subjectId);
+            if (!user.subjects.Contains(subject))
+                user.subjects.Add(subject);
+
+            var result = _manager.UpdateAsync(user).Result;
+            Console.WriteLine($"Count: {user.subjects.Count}");
+            if (result.Succeeded)
+                return Ok(new UserDTO(user));
             return BadRequest(new { Message = result.ToString() });
         }
 
