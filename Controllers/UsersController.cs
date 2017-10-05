@@ -89,17 +89,18 @@ namespace NoteShareAPI.Controllers
         }
 
         [HttpPut("addsubject")]
-        public ActionResult Put([FromBody]int subjectId)
+        public async Task<ActionResult> Put(int subjectId)
         {
-            var user = _manager.GetUserAsync(User).Result;
+            var user = await _manager.GetUserAsync(User);
             if (user.subjects == null)
                 user.subjects = new List<Subject>();
 
             var subject = _db.Subjects.FirstOrDefault(s => s.SubjectId == subjectId);
+            Console.WriteLine(subject.Name);
             if (!user.subjects.Contains(subject))
                 user.subjects.Add(subject);
 
-            var result = _manager.UpdateAsync(user).Result;
+            var result = await _manager.UpdateAsync(user);
             Console.WriteLine($"Count: {user.subjects.Count}");
             if (result.Succeeded)
                 return Ok(new UserDTO(user));
