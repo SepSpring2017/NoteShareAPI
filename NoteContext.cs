@@ -13,6 +13,7 @@ namespace NoteShareAPI
 
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Document> Documents { get; set; }
+        public DbSet<UserSubject> UserSubjects { get; set; }
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -21,6 +22,9 @@ namespace NoteShareAPI
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<UserSubject>()
+                .HasKey(us => new { us.UserId, us.SubjectId });
+
             base.OnModelCreating(builder);
 
             // Customize the ASP.NET Identity model and override the defaults if needed.
