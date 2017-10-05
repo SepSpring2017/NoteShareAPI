@@ -81,7 +81,7 @@ namespace NoteShareAPI.Controllers
             var user = _manager.FindByIdAsync(userId).Result;
             if (user == null)
                 return BadRequest(new { message = "No user found for that Id" });
-            user.subjects = u.subjects;
+            user.Subjects = u.subjects;
             var result = _manager.UpdateAsync(user).Result;
             if (result.Succeeded)
                 return Ok();
@@ -92,16 +92,16 @@ namespace NoteShareAPI.Controllers
         public async Task<ActionResult> Put(int subjectId)
         {
             var user = await _manager.GetUserAsync(User);
-            if (user.subjects == null)
-                user.subjects = new List<Subject>();
+            if (user.Subjects == null)
+                user.Subjects = new List<Subject>();
 
             var subject = _db.Subjects.FirstOrDefault(s => s.SubjectId == subjectId);
             Console.WriteLine(subject.Name);
-            if (!user.subjects.Contains(subject))
-                user.subjects.Add(subject);
+            if (!user.Subjects.Contains(subject))
+                user.Subjects.Add(subject);
 
             var result = await _manager.UpdateAsync(user);
-            Console.WriteLine($"Count: {user.subjects.Count}");
+            Console.WriteLine($"Count: {user.Subjects.Count}");
             if (result.Succeeded)
                 return Ok(new UserDTO(user));
             return BadRequest(new { Message = result.ToString() });

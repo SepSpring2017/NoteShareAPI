@@ -39,13 +39,14 @@ namespace NoteShareAPI
                 }
             }
 
+            var newUser = new ApplicationUser
+            {
+                UserName = "test@test.com",
+                Email = "test@test.com"
+            };
+
             if (!_manager.Users.Any())
             {
-                var newUser = new ApplicationUser
-                {
-                    UserName = "test@test.com",
-                    Email = "test@test.com"
-                };
                 var result = _manager.CreateAsync(newUser, "J8cG!FjD").Result;
                 if (result.Succeeded)
                     _manager.AddToRoleAsync(newUser, "Admin");
@@ -55,6 +56,21 @@ namespace NoteShareAPI
             {
                 var scraper = new SubjectScraper(_context);
                 scraper.Start();
+            }
+
+            var SEP = _context.Subjects.FirstOrDefault(s => s.SubjectId == 48440);
+
+            if (!_context.Documents.Any())
+            {
+                var doc = new Document
+                {
+                    FileName = "test.pdf",
+                    Subject = SEP,
+                    DocumentName = "SEP Subject Outline",
+                    DocumentType = "Subject Outline",
+                    Owner = newUser
+                };
+                _context.Documents.Add(doc);
             }
 
             _context.SaveChanges();

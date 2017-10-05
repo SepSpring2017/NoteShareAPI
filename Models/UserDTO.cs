@@ -10,7 +10,7 @@ namespace NoteShareAPI.Models
         {
             this.email = u.Email;
             this.id = u.Id;
-            this.subjects = u.subjects;
+            this.subjects = u.Subjects;
             this.roles = new List<RoleDTO>();
 
             var db = new NoteContext();

@@ -15,7 +15,9 @@ namespace NoteShareAPI.Entities
 		public string FileName { get; set; }
         public string DocumentType { get; set; }
 		public string DocumentName { get; set; }
+		public string OwnerId { get; set; }
 		public ApplicationUser Owner { get; set; }
+		public int SubjectId { get; set; }
 		public Subject Subject { get; set; }
 	}
 }
