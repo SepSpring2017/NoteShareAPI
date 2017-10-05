@@ -75,34 +75,21 @@ namespace NoteShareAPI.Controllers
             return BadRequest(new { Message = result.ToString() });
         }
 
-        [HttpPut("{userId}")]
-        public ActionResult Put(string userId, [FromBody] UserDTO u)
-        {
-            var user = _manager.FindByIdAsync(userId).Result;
-            if (user == null)
-                return BadRequest(new { message = "No user found for that Id" });
-            user.Subjects = u.subjects;
-            var result = _manager.UpdateAsync(user).Result;
-            if (result.Succeeded)
-                return Ok();
-            return BadRequest(new { Message = result.ToString() });
-        }
-
         [HttpPut("addsubject")]
         public async Task<ActionResult> Put(int subjectId)
         {
             var user = await _manager.GetUserAsync(User);
-            if (user.Subjects == null)
-                user.Subjects = new List<Subject>();
+            var subjects = _db.UserSubjects.Where(us => us.UserId == user.Id).Select(us => us.Subject).ToList();
+            Console.WriteLine($"{user.Email} has {subjects.Count} subjects before");
 
             var subject = _db.Subjects.FirstOrDefault(s => s.SubjectId == subjectId);
-            Console.WriteLine(subject.Name);
-            if (!user.Subjects.Contains(subject))
-                user.Subjects.Add(subject);
+            if (!subjects.Contains(subject))
+                _db.UserSubjects.Add(new UserSubject { User = user, Subject = subject });
 
-            var result = await _manager.UpdateAsync(user);
-            Console.WriteLine($"Count: {user.Subjects.Count}");
-            if (result.Succeeded)
+            var result = _db.SaveChanges();
+            subjects = _db.UserSubjects.Where(us => us.UserId == user.Id).Select(us => us.Subject).ToList();
+            Console.WriteLine($"{user.Email} has {subjects.Count} subjects after");
+            if (result > 0)
                 return Ok(new UserDTO(user));
             return BadRequest(new { Message = result.ToString() });
         }

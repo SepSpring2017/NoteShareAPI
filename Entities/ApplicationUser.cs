@@ -6,6 +6,6 @@ namespace NoteShareAPI.Entities
 {
     public class ApplicationUser : IdentityUser
     {
-        public List<Subject> Subjects { get; set; }
+        // Removed custom properties because many to many is broken in EF Core
     }
 }
