@@ -70,7 +70,7 @@ namespace NoteShareAPI.Controllers
             if (result.Succeeded)
             {
                 _manager.AddToRoleAsync(newUser, "Student");
-                return Ok();
+                return Ok(new UserDTO(newUser));
             }
             return BadRequest(new { Message = result.ToString() });
         }
