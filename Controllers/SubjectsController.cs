@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NoteShareAPI.Entities;
+using NoteShareAPI.Models;
 
 namespace NoteShareAPI.Controllers
 {
@@ -20,16 +21,20 @@ namespace NoteShareAPI.Controllers
 
         // GET api/values
         [HttpGet]
-        public IEnumerable<Subject> Get()
+        public IEnumerable<SubjectDTO> Get()
         {
-            return db.Subjects.ToList().OrderBy(s => s.Name);
+            var subjects = db.Subjects.ToList().OrderBy(s => s.Name);
+            var DTOList = new List<SubjectDTO>();
+            foreach (var subject in subjects)
+                DTOList.Add(new SubjectDTO(subject));
+            return DTOList;
         }
 
         [HttpGet("search/{query}")]
-        public IEnumerable<Subject> Search(string query)
+        public IEnumerable<SubjectDTO> Search(string query)
         {
             query = query.ToLower();
-            return Get().Where(s => s.Name.ToLower().Contains(query) || s.SubjectId.ToString().Contains(query));
+            return Get().Where(s => s.name.ToLower().Contains(query) || s.subjectId.ToString().Contains(query));
         }
 
         // GET api/values/5

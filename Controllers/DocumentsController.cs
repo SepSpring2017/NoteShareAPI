@@ -38,13 +38,15 @@ namespace NoteShareAPI.Controllers
         [HttpGet("search")]
         public IEnumerable<Document> Search(string query)
         {
-            return Get().Where(d => d.DocumentName.Contains(query) || d.DocumentType.Contains(query));
+            query = query.ToLower();
+            return Get().Where(d => d.DocumentName.ToLower().Contains(query) || d.DocumentType.ToLower().Contains(query));
         }
 
         [HttpGet("search")]
         public IEnumerable<Document> Search(string subject, string query)
         {
-            return Search(query).Where(d => d.Subject.Name.Contains(subject) || d.Subject.SubjectId.ToString().Contains(subject));
+            subject = subject.ToLower();
+            return Search(query).Where(d => d.Subject.Name.ToLower().Contains(subject) || d.Subject.SubjectId.ToString().Contains(subject));
         }
 
         // GET api/values/5
