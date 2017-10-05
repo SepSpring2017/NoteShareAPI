@@ -7,7 +7,5 @@ namespace NoteShareAPI.Entities
     public class ApplicationUser : IdentityUser
     {
         public List<Subject> Subjects { get; set; }
-        [InverseProperty("Owner")]
-        public List<Document> Documents { get; set; }
     }
 }

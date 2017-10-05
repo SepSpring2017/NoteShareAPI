@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NoteShareAPI.Entities;
 using NoteShareAPI.Models;
 
@@ -31,7 +32,7 @@ namespace NoteShareAPI.Controllers
         [HttpGet]
         public IEnumerable<Document> Get()
         {
-            return db.Documents.ToList().OrderBy(d => d.UploadDate);
+            return db.Documents.Include(d => d.Owner).Include(d => d.Subject).ToList().OrderBy(d => d.UploadDate);
         }
 
         [HttpGet("search")]
@@ -68,7 +69,7 @@ namespace NoteShareAPI.Controllers
             }
             try 
             {
-                var uploadDirectory = $"{env.WebRootPath}/Uploads";
+                var uploadDirectory = $"{env.WebRootPath}/wwwroot/Uploads";
                 if (!Directory.Exists(uploadDirectory))
                     Directory.CreateDirectory(uploadDirectory);
                 if (upload.File.Length > 0)
