@@ -43,7 +43,7 @@ namespace NoteShareAPI.Controllers
         {
             var subject = db.Subjects.FirstOrDefault(s => s.SubjectId == id);
             if (subject != null)
-                return Ok(subject);
+                return Ok(new SubjectDTO(subject));
             return NotFound(new { message = "No subject found for that Id" });
         }
 
@@ -71,7 +71,7 @@ namespace NoteShareAPI.Controllers
             {
                 existingSubject.Name = s.Name;
                 db.SaveChanges();
-                return Ok(existingSubject);
+                return Ok(new SubjectDTO(existingSubject));
             }
             return BadRequest(new { message = "No subject found for that Id" });
         }
