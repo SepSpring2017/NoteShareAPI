@@ -11,7 +11,7 @@ namespace NoteShareAPI.Models
         [Required]
         public string DocumentName { get; set; }
         [Required]
-        public Subject Subject { get; set; }
+        public int SubjectId { get; set; }
         [Required]
         public string DocumentType { get; set; }
     }

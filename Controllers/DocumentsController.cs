@@ -85,7 +85,7 @@ namespace NoteShareAPI.Controllers
                         upload.File.CopyToAsync(stream);
                     }
 
-                    var subject = db.Subjects.FirstOrDefault(s => s.SubjectId == upload.Subject.SubjectId);
+                    var subject = db.Subjects.FirstOrDefault(s => s.SubjectId == upload.SubjectId);
 
                     var document = new Document
                     {
