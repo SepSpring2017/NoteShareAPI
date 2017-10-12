@@ -84,15 +84,15 @@ namespace NoteShareAPI.Controllers
         {
             var user = await _manager.GetUserAsync(User);
             var subjects = _db.UserSubjects.Where(us => us.UserId == user.Id).Select(us => us.Subject).ToList();
-            Console.WriteLine($"{user.Email} has {subjects.Count} subjects before");
 
             var subject = _db.Subjects.FirstOrDefault(s => s.SubjectId == subjectId);
+            if (subject == null)
+                return BadRequest(new { Message = "No subject found for that Id" });
+
             if (!subjects.Contains(subject))
                 _db.UserSubjects.Add(new UserSubject { User = user, Subject = subject });
 
             var result = _db.SaveChanges();
-            subjects = _db.UserSubjects.Where(us => us.UserId == user.Id).Select(us => us.Subject).ToList();
-            Console.WriteLine($"{user.Email} has {subjects.Count} subjects after");
             if (result > 0)
                 return Ok(new UserDTO(user));
             return BadRequest(new { Message = result.ToString() });
