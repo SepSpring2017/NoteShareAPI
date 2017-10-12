@@ -63,27 +63,26 @@ namespace NoteShareAPI.Controllers
         // POST api/values
         [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
         [HttpPost]
-        public ActionResult Post([FromBody] UploadModel upload)
+        public async Task<ActionResult> Post(UploadModel upload)
         {
             if (!ModelState.IsValid)
             {
                 var messages = ModelState.Values.Select(e => e.Errors.Select(error => error.ErrorMessage).First());
                 return BadRequest(new { Message = String.Join(" ", messages) });
             }
-            try 
+            try
             {
-                var uploadDirectory = $"{env.WebRootPath}/wwwroot/Uploads";
+                var uploadDirectory = $"{env.WebRootPath}/Uploads";
                 if (!Directory.Exists(uploadDirectory))
                     Directory.CreateDirectory(uploadDirectory);
                 if (upload.File.Length > 0)
                 {
-                    var allFiles = Directory.GetFiles(uploadDirectory).ToList();
-                    var fileName = Services.GetUniqueSlug(upload.File.FileName, allFiles);
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(upload.File.FileName);
                     var filePath = Path.Combine(uploadDirectory, fileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        upload.File.CopyToAsync(stream);
+                        await upload.File.CopyToAsync(stream);
                     }
 
                     var subject = db.Subjects.FirstOrDefault(s => s.SubjectId == upload.SubjectId);
@@ -100,7 +99,7 @@ namespace NoteShareAPI.Controllers
                     db.SaveChanges();
                     return Ok(new { file = $"/Uploads/{fileName}"});
                 }
-                return BadRequest();
+                return BadRequest(new { message = "You need to upload a document" });
             } catch (Exception e)
             {
                 return StatusCode(500, e.Message);
