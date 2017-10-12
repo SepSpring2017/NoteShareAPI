@@ -29,11 +29,7 @@ namespace NoteShareAPI.Controllers
         [HttpGet]
         public IEnumerable<UserDTO> Get()
         {
-            var allUsers = _manager.Users.ToList();
-            var DTOList = new List<UserDTO>();
-            foreach (var user in allUsers)
-                DTOList.Add(new UserDTO(user));
-            return DTOList;
+            return _manager.Users.Select(u => new UserDTO(u)).ToList();
         }
 
         [HttpGet("{id}")]
@@ -50,6 +46,14 @@ namespace NoteShareAPI.Controllers
         {
             var id = _manager.GetUserId(User);
             return Get(id);
+        }
+
+        [HttpGet("mynotes")]
+        public ActionResult MyNotes()
+        {
+            var id = _manager.GetUserId(User);
+            var documents = _db.Documents.Where(d => d.OwnerId == id).Select(d => new DocumentDTO(d)).OrderBy(d => d.documentName);
+            return Ok(documents);
         }
 
         [HttpPost]

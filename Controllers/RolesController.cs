@@ -27,11 +27,7 @@ namespace NoteShareAPI.Controllers
         [HttpGet]
         public IEnumerable<RoleDTO> Get()
         {
-            var DTOList = new List<RoleDTO>();
-            var allRoles = _roleManager.Roles.ToList();
-            foreach (var role in allRoles)
-                DTOList.Add(new RoleDTO(role));
-            return DTOList;
+            return _roleManager.Roles.Select(r => new RoleDTO(r)).ToList();
         }
 
         [HttpGet("{id}")]

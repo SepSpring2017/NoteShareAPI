@@ -23,11 +23,7 @@ namespace NoteShareAPI.Controllers
         [HttpGet]
         public IEnumerable<SubjectDTO> Get()
         {
-            var subjects = db.Subjects.ToList().OrderBy(s => s.Name);
-            var DTOList = new List<SubjectDTO>();
-            foreach (var subject in subjects)
-                DTOList.Add(new SubjectDTO(subject));
-            return DTOList;
+            return db.Subjects.Select(s => new SubjectDTO(s)).ToList().OrderBy(s => s.name);
         }
 
         [HttpGet("search/{query}")]

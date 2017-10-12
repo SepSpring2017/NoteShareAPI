@@ -31,23 +31,23 @@ namespace NoteShareAPI.Controllers
 
         // GET api/values
         [HttpGet]
-        public IEnumerable<Document> Get()
+        public IEnumerable<DocumentDTO> Get()
         {
-            return db.Documents.Include(d => d.Owner).Include(d => d.Subject).ToList().OrderBy(d => d.UploadDate);
+            return db.Documents.Include(d => d.Owner).Include(d => d.Subject).Select(d => new DocumentDTO(d)).ToList().OrderBy(d => d.documentName);
         }
 
         [HttpGet("search")]
-        public IEnumerable<Document> Search(string query)
+        public IEnumerable<DocumentDTO> Search(string query)
         {
             query = query.ToLower();
-            return Get().Where(d => d.DocumentName.ToLower().Contains(query) || d.DocumentType.ToLower().Contains(query));
+            return Get().Where(d => d.documentName.ToLower().Contains(query) || d.documentType.ToLower().Contains(query));
         }
 
         [HttpGet("search")]
-        public IEnumerable<Document> Search(string subject, string query)
+        public IEnumerable<DocumentDTO> Search(string subject, string query)
         {
             subject = subject.ToLower();
-            return Search(query).Where(d => d.Subject.Name.ToLower().Contains(subject) || d.Subject.SubjectId.ToString().Contains(subject));
+            return Search(query).Where(d => d.subject.Name.ToLower().Contains(subject) || d.subject.SubjectId.ToString().Contains(subject));
         }
 
         // GET api/values/5
@@ -56,7 +56,7 @@ namespace NoteShareAPI.Controllers
         {
             var document = db.Documents.FirstOrDefault(s => s.ID == id);
             if (document != null)
-                return Ok(document);
+                return Ok(new DocumentDTO(document));
             return NotFound(new { message = "No document found for that Id" });
         }
 
@@ -97,7 +97,7 @@ namespace NoteShareAPI.Controllers
                     };
                     db.Documents.Add(document);
                     db.SaveChanges();
-                    return Ok(new { file = $"/Uploads/{fileName}"});
+                    return Ok(new DocumentDTO(document));
                 }
                 return BadRequest(new { message = "You need to upload a document" });
             } catch (Exception e)
@@ -109,14 +109,15 @@ namespace NoteShareAPI.Controllers
         // PUT api/values/5
         [Authorize]
         [HttpPut("{id}")]
-        public ActionResult Put(string id, Document d)
+        public ActionResult Put(string id, DocumentDTO d)
         {
             var existingDocument = db.Documents.FirstOrDefault(document => document.ID == id);
             if (existingDocument != null)
             {
-                existingDocument.DocumentType = d.DocumentType;
+                existingDocument.DocumentType = d.documentType;
+                existingDocument.DocumentName = d.documentName;
                 db.SaveChanges();
-                return Ok(existingDocument);
+                return Ok(new DocumentDTO(existingDocument));
             }
             return BadRequest(new { message = "No document found for that Id" });
         }
