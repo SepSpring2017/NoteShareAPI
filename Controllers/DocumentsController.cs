@@ -39,12 +39,14 @@ namespace NoteShareAPI.Controllers
         [HttpGet("search")]
         public IEnumerable<DocumentDTO> Search(string query)
         {
+            if (query == null)
+                query = string.Empty;
             query = query.ToLower();
             return Get().Where(d => d.documentName.ToLower().Contains(query) || d.documentType.ToLower().Contains(query));
         }
 
-        [HttpGet("search")]
-        public IEnumerable<DocumentDTO> Search(string subject, string query)
+        [HttpGet("searchsubject")]
+        public IEnumerable<DocumentDTO> SearchSubject(string subject, string query)
         {
             subject = subject.ToLower();
             return Search(query).Where(d => d.subject.Name.ToLower().Contains(subject) || d.subject.SubjectId.ToString().Contains(subject));
