@@ -23,6 +23,12 @@ namespace NoteShareAPI.Controllers
             return _db.Subjects.Select(s => new SubjectDTO(s)).ToList().OrderBy(s => s.name);
         }
 
+        [HttpGet("withnotes")]
+        public IEnumerable<SubjectDTO> GetWithNotes()
+        {
+            return _db.Subjects.Select(s => new SubjectDTO(s)).ToList().Where(s => s.documentCount > 0).OrderBy(s => s.name);
+        }
+
         [HttpGet("search/{query}")]
         public IEnumerable<SubjectDTO> Search(string query)
         {
