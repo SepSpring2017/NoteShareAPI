@@ -27,9 +27,6 @@ namespace NoteShareAPI
             builder.Entity<UserSubject>()
                 .HasKey(us => new { us.UserId, us.SubjectId });
 
-            builder.Entity<Rating>()
-                .HasKey(r => new { r.Document, r.User });
-
             base.OnModelCreating(builder);
 
             // Customize the ASP.NET Identity model and override the defaults if needed.
