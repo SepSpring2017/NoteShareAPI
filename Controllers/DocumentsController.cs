@@ -51,6 +51,73 @@ namespace NoteShareAPI.Controllers
             return Search(query).Where(d => d.subject.Name.ToLower().Contains(subject) || d.subject.SubjectId.ToString().Contains(subject));
         }
 
+        [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+        [HttpPost("bookmark")]
+        public ActionResult BookmarkDocument(string id)
+        {
+            var document = db.Documents.FirstOrDefault(s => s.ID == id);
+            if (document == null)
+                return NotFound(new { message = "No document found for that Id" });
+            var user = userManager.GetUserAsync(User).Result;
+
+            if (db.Bookmarks.Any(b => b.Document.ID == id && b.User.Id == user.Id))
+                return BadRequest(new { message = "This bookmark already exists" });
+
+            var bookmark = new Bookmark
+            {
+                User = user,
+                Document = document
+            };
+
+            db.Bookmarks.Add(bookmark);
+            db.SaveChanges();
+            return Ok();
+        }
+
+        [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+        [HttpPost("vote")]
+        public ActionResult Vote(string documentId, bool isUpvote)
+        {
+            var document = db.Documents.FirstOrDefault(s => s.ID == documentId);
+            if (document == null)
+                return NotFound(new { message = "No document found for that Id" });
+
+            var user = userManager.GetUserAsync(User).Result;
+            var rating = db.Ratings.FirstOrDefault(r => r.User.Id == user.Id && r.Document.ID == documentId);
+
+            if (rating == null)
+            {
+                var newRating = new Rating
+                {
+                    User = user,
+                    Document = document,
+                    IsUpvote = isUpvote
+                };
+                db.Ratings.Add(newRating);
+            }
+            else
+            {
+                rating.IsUpvote = isUpvote;
+            }
+
+            db.SaveChanges();
+            return Ok();
+        }
+
+        [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+        [HttpPost("upvote")]
+        public ActionResult UpVote(string documentId)
+        {
+            return Vote(documentId, true);
+        }
+
+        [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+        [HttpPost("downvote")]
+        public ActionResult DownVote(string documentId)
+        {
+            return Vote(documentId, false);
+        }
+
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult Get(string id)
@@ -93,7 +160,7 @@ namespace NoteShareAPI.Controllers
                         FileName = fileName,
                         DocumentName = upload.DocumentName,
                         DocumentType = upload.DocumentType,
-                        Owner = userManager.FindByNameAsync(User.Identity.Name).Result,
+                        Owner = userManager.GetUserAsync(User).Result,
                         Subject = subject
                     };
                     db.Documents.Add(document);
