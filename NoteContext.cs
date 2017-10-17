@@ -14,6 +14,8 @@ namespace NoteShareAPI
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<UserSubject> UserSubjects { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
+        public DbSet<Bookmark> Bookmarks { get; set; }
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -24,6 +26,9 @@ namespace NoteShareAPI
         {
             builder.Entity<UserSubject>()
                 .HasKey(us => new { us.UserId, us.SubjectId });
+
+            builder.Entity<Rating>()
+                .HasKey(r => new { r.Document, r.User });
 
             base.OnModelCreating(builder);
 
