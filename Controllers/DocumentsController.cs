@@ -18,22 +18,22 @@ namespace NoteShareAPI.Controllers
     [Route("api/[controller]")]
     public class DocumentsController : Controller
     {
-        private readonly NoteContext db;
-        private readonly IHostingEnvironment env;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly NoteContext _db;
+        private readonly IHostingEnvironment _env;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public DocumentsController(NoteContext context, IHostingEnvironment host, UserManager<ApplicationUser> manager)
         {
-            db = context;
-            env = host;
-            userManager = manager;
+            _db = context;
+            _env = host;
+            _userManager = manager;
         }
 
         // GET api/values
         [HttpGet]
         public IEnumerable<DocumentDTO> Get()
         {
-            return db.Documents.Include(d => d.Owner).Include(d => d.Subject).Select(d => new DocumentDTO(d)).ToList().OrderBy(d => d.documentName);
+            return _db.Documents.Include(d => d.Owner).Include(d => d.Subject).Select(d => new DocumentDTO(d)).ToList().OrderBy(d => d.documentName);
         }
 
         [HttpGet("search")]
@@ -55,12 +55,12 @@ namespace NoteShareAPI.Controllers
         [HttpPost("bookmark")]
         public ActionResult BookmarkDocument(string id)
         {
-            var document = db.Documents.FirstOrDefault(s => s.ID == id);
+            var document = _db.Documents.FirstOrDefault(s => s.ID == id);
             if (document == null)
                 return NotFound(new { message = "No document found for that Id" });
-            var user = userManager.GetUserAsync(User).Result;
+            var user = _userManager.GetUserAsync(User).Result;
 
-            if (db.Bookmarks.Any(b => b.Document.ID == id && b.User.Id == user.Id))
+            if (_db.Bookmarks.Any(b => b.Document.ID == id && b.User.Id == user.Id))
                 return BadRequest(new { message = "This bookmark already exists" });
 
             var bookmark = new Bookmark
@@ -69,20 +69,20 @@ namespace NoteShareAPI.Controllers
                 Document = document
             };
 
-            db.Bookmarks.Add(bookmark);
-            db.SaveChanges();
+            _db.Bookmarks.Add(bookmark);
+            _db.SaveChanges();
             return Ok();
         }
         
         [HttpPost("vote")]
         public ActionResult Vote(string documentId, bool isUpvote)
         {
-            var document = db.Documents.FirstOrDefault(s => s.ID == documentId);
+            var document = _db.Documents.FirstOrDefault(s => s.ID == documentId);
             if (document == null)
                 return NotFound(new { message = "No document found for that Id" });
 
-            var user = userManager.GetUserAsync(User).Result;
-            var rating = db.Ratings.FirstOrDefault(r => r.User.Id == user.Id && r.Document.ID == documentId);
+            var user = _userManager.GetUserAsync(User).Result;
+            var rating = _db.Ratings.FirstOrDefault(r => r.User.Id == user.Id && r.Document.ID == documentId);
 
             if (rating == null)
             {
@@ -92,14 +92,14 @@ namespace NoteShareAPI.Controllers
                     Document = document,
                     IsUpvote = isUpvote
                 };
-                db.Ratings.Add(newRating);
+                _db.Ratings.Add(newRating);
             }
             else
             {
                 rating.IsUpvote = isUpvote;
             }
 
-            db.SaveChanges();
+            _db.SaveChanges();
             return Ok();
         }
         
@@ -118,7 +118,7 @@ namespace NoteShareAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult Get(string id)
         {
-            var document = db.Documents.FirstOrDefault(s => s.ID == id);
+            var document = _db.Documents.FirstOrDefault(s => s.ID == id);
             if (document != null)
                 return Ok(new DocumentDTO(document));
             return NotFound(new { message = "No document found for that Id" });
@@ -134,7 +134,7 @@ namespace NoteShareAPI.Controllers
             }
             try
             {
-                var uploadDirectory = $"{env.WebRootPath}/Uploads";
+                var uploadDirectory = $"{_env.WebRootPath}/Uploads";
                 if (!Directory.Exists(uploadDirectory))
                     Directory.CreateDirectory(uploadDirectory);
                 if (upload.File.Length > 0)
@@ -147,18 +147,18 @@ namespace NoteShareAPI.Controllers
                         await upload.File.CopyToAsync(stream);
                     }
 
-                    var subject = db.Subjects.FirstOrDefault(s => s.SubjectId == upload.SubjectId);
+                    var subject = _db.Subjects.FirstOrDefault(s => s.SubjectId == upload.SubjectId);
 
                     var document = new Document
                     {
                         FileName = fileName,
                         DocumentName = upload.DocumentName,
                         DocumentType = upload.DocumentType,
-                        Owner = userManager.GetUserAsync(User).Result,
+                        Owner = _userManager.GetUserAsync(User).Result,
                         Subject = subject
                     };
-                    db.Documents.Add(document);
-                    db.SaveChanges();
+                    _db.Documents.Add(document);
+                    _db.SaveChanges();
                     return Ok(new DocumentDTO(document));
                 }
                 return BadRequest(new { message = "You need to upload a document" });
@@ -171,12 +171,12 @@ namespace NoteShareAPI.Controllers
         [HttpPut("{id}")]
         public ActionResult Put(string id, DocumentDTO d)
         {
-            var existingDocument = db.Documents.FirstOrDefault(document => document.ID == id);
+            var existingDocument = _db.Documents.FirstOrDefault(document => document.ID == id);
             if (existingDocument != null)
             {
                 existingDocument.DocumentType = d.documentType;
                 existingDocument.DocumentName = d.documentName;
-                db.SaveChanges();
+                _db.SaveChanges();
                 return Ok(new DocumentDTO(existingDocument));
             }
             return BadRequest(new { message = "No document found for that Id" });
@@ -185,11 +185,11 @@ namespace NoteShareAPI.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
-            var existingDocument = db.Documents.FirstOrDefault(document => document.ID == id);
+            var existingDocument = _db.Documents.FirstOrDefault(document => document.ID == id);
             if (existingDocument != null)
             {
-                db.Documents.Remove(existingDocument);
-                db.SaveChanges();
+                _db.Documents.Remove(existingDocument);
+                _db.SaveChanges();
                 return Ok();
             }
             return BadRequest(new { message = "No document found for that Id" });
