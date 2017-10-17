@@ -41,7 +41,7 @@ namespace NoteShareAPI.Controllers
         public ActionResult Post(string Name)
         {
             if (_roleManager.RoleExistsAsync(Name).Result)
-                return BadRequest(new { message = "This role already exists"});
+                return BadRequest(new { message = "This role already exists" });
             _roleManager.CreateAsync(new IdentityRole(Name));
             return Ok();
         }

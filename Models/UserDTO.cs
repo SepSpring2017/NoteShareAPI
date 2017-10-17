@@ -21,7 +21,7 @@ namespace NoteShareAPI.Models
                 roles.Add(new RoleDTO(r));
         }
 
-        public UserDTO() {}
+        public UserDTO() { }
 
         public string id { get; set; }
         public string email { get; set; }

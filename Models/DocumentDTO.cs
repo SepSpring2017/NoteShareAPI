@@ -31,7 +31,7 @@ namespace NoteShareAPI.Models
             }
             else
             {
-                rating = (double) allRatings.Count() / db.Ratings.Where(r => r.IsUpvote).Count();
+                rating = (double)allRatings.Count() / db.Ratings.Where(r => r.IsUpvote).Count();
             }
         }
     }

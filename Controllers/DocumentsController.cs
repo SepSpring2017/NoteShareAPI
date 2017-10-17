@@ -51,7 +51,7 @@ namespace NoteShareAPI.Controllers
             subject = subject.ToLower();
             return Search(query).Where(d => d.subject.Name.ToLower().Contains(subject) || d.subject.SubjectId.ToString().Contains(subject));
         }
-        
+
         [HttpPost("bookmark")]
         public ActionResult BookmarkDocument(string id)
         {
@@ -73,7 +73,7 @@ namespace NoteShareAPI.Controllers
             _db.SaveChanges();
             return Ok();
         }
-        
+
         [HttpPost("vote")]
         public ActionResult Vote(string documentId, bool isUpvote)
         {
@@ -102,19 +102,19 @@ namespace NoteShareAPI.Controllers
             _db.SaveChanges();
             return Ok();
         }
-        
+
         [HttpPost("upvote")]
         public ActionResult UpVote(string documentId)
         {
             return Vote(documentId, true);
         }
-        
+
         [HttpPost("downvote")]
         public ActionResult DownVote(string documentId)
         {
             return Vote(documentId, false);
         }
-        
+
         [HttpGet("{id}")]
         public ActionResult Get(string id)
         {
@@ -162,12 +162,13 @@ namespace NoteShareAPI.Controllers
                     return Ok(new DocumentDTO(document));
                 }
                 return BadRequest(new { message = "You need to upload a document" });
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
-        
+
         [HttpPut("{id}")]
         public ActionResult Put(string id, DocumentDTO d)
         {

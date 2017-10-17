@@ -10,18 +10,17 @@ namespace NoteShareAPI.Controllers
     [Route("api/[controller]")]
     public class SubjectsController : Controller
     {
-        private readonly NoteContext db;
+        private readonly NoteContext _db;
 
         public SubjectsController(NoteContext context)
         {
-            db = context;
+            _db = context;
         }
-
-        // GET api/values
+        
         [HttpGet]
         public IEnumerable<SubjectDTO> Get()
         {
-            return db.Subjects.Select(s => new SubjectDTO(s)).ToList().OrderBy(s => s.name);
+            return _db.Subjects.Select(s => new SubjectDTO(s)).ToList().OrderBy(s => s.name);
         }
 
         [HttpGet("search/{query}")]
@@ -30,18 +29,16 @@ namespace NoteShareAPI.Controllers
             query = query.ToLower();
             return Get().Where(s => s.name.ToLower().Contains(query) || s.subjectId.ToString().Contains(query));
         }
-
-        // GET api/values/5
+        
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var subject = db.Subjects.FirstOrDefault(s => s.SubjectId == id);
+            var subject = _db.Subjects.FirstOrDefault(s => s.SubjectId == id);
             if (subject != null)
                 return Ok(new SubjectDTO(subject));
             return NotFound(new { message = "No subject found for that Id" });
         }
-
-        // POST api/values
+        
         [Authorize]
         [HttpPost]
         public void Post(Subject s)
@@ -51,35 +48,33 @@ namespace NoteShareAPI.Controllers
                 SubjectId = s.SubjectId,
                 Name = s.Name
             };
-            db.Subjects.Add(subject);
-            db.SaveChanges();
+            _db.Subjects.Add(subject);
+            _db.SaveChanges();
         }
-
-        // PUT api/values/5
+        
         [Authorize]
         [HttpPut("{id}")]
         public ActionResult Put(int id, Subject s)
         {
-            var existingSubject = db.Subjects.FirstOrDefault(subject => subject.SubjectId == id);
+            var existingSubject = _db.Subjects.FirstOrDefault(subject => subject.SubjectId == id);
             if (existingSubject != null)
             {
                 existingSubject.Name = s.Name;
-                db.SaveChanges();
+                _db.SaveChanges();
                 return Ok(new SubjectDTO(existingSubject));
             }
             return BadRequest(new { message = "No subject found for that Id" });
         }
-
-        // DELETE api/values/5
+        
         [Authorize]
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var existingSubject = db.Subjects.FirstOrDefault(subject => subject.SubjectId == id);
+            var existingSubject = _db.Subjects.FirstOrDefault(subject => subject.SubjectId == id);
             if (existingSubject != null)
             {
-                db.Subjects.Remove(existingSubject);
-                db.SaveChanges();
+                _db.Subjects.Remove(existingSubject);
+                _db.SaveChanges();
                 return Ok();
             }
             return BadRequest(new { message = "No subject found for that Id" });

@@ -46,7 +46,7 @@ namespace NoteShareAPI
                 if (!subjectList.Contains(subject))
                     subjectList.Add(subject);
             }
-            
+
             db.Subjects.AddRange(subjectList);
             db.SaveChanges();
         }

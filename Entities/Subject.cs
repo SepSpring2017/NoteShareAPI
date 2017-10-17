@@ -12,7 +12,7 @@
 
             if (item == null)
                 return false;
-            
+
             return SubjectId == item.SubjectId;
         }
 

@@ -32,7 +32,7 @@ namespace NoteShareAPI
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<NoteContext>()
                 .AddDefaultTokenProviders();
-                
+
             services.Configure<IdentityOptions>(options =>
             {
                 options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
@@ -74,7 +74,7 @@ namespace NoteShareAPI
                 .AddOAuthValidation();
 
             services.AddScoped<IDbInitialize, DbInitialize>();
-            
+
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;
