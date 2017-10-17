@@ -20,11 +20,11 @@ namespace NoteShareAPI.Models
             documentType = d.DocumentType;
             subject = d.Subject;
             fileName = d.FileName;
-            id = d.ID;
+            id = d.Id;
             uploadDate = d.UploadDate;
 
             var db = new NoteContext();
-            var allRatings = db.Ratings.Where(r => r.Document.ID == d.ID);
+            var allRatings = db.Ratings.Where(r => r.Document.Id == d.Id);
             if (allRatings.Count() == 0)
             {
                 rating = 0.0;

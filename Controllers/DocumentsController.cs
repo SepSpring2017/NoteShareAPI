@@ -55,12 +55,12 @@ namespace NoteShareAPI.Controllers
         [HttpPost("bookmark")]
         public ActionResult BookmarkDocument(string id)
         {
-            var document = _db.Documents.FirstOrDefault(s => s.ID == id);
+            var document = _db.Documents.FirstOrDefault(s => s.Id == id);
             if (document == null)
                 return NotFound(new { message = "No document found for that Id" });
             var user = _userManager.GetUserAsync(User).Result;
 
-            if (_db.Bookmarks.Any(b => b.Document.ID == id && b.User.Id == user.Id))
+            if (_db.Bookmarks.Any(b => b.Document.Id == id && b.User.Id == user.Id))
                 return BadRequest(new { message = "This bookmark already exists" });
 
             var bookmark = new Bookmark
@@ -77,12 +77,12 @@ namespace NoteShareAPI.Controllers
         [HttpPost("vote")]
         public ActionResult Vote(string documentId, bool isUpvote)
         {
-            var document = _db.Documents.FirstOrDefault(s => s.ID == documentId);
+            var document = _db.Documents.FirstOrDefault(s => s.Id == documentId);
             if (document == null)
                 return NotFound(new { message = "No document found for that Id" });
 
             var user = _userManager.GetUserAsync(User).Result;
-            var rating = _db.Ratings.FirstOrDefault(r => r.User.Id == user.Id && r.Document.ID == documentId);
+            var rating = _db.Ratings.FirstOrDefault(r => r.User.Id == user.Id && r.Document.Id == documentId);
 
             if (rating == null)
             {
@@ -118,7 +118,7 @@ namespace NoteShareAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult Get(string id)
         {
-            var document = _db.Documents.FirstOrDefault(s => s.ID == id);
+            var document = _db.Documents.FirstOrDefault(s => s.Id == id);
             if (document != null)
                 return Ok(new DocumentDTO(document));
             return NotFound(new { message = "No document found for that Id" });
@@ -171,7 +171,7 @@ namespace NoteShareAPI.Controllers
         [HttpPut("{id}")]
         public ActionResult Put(string id, DocumentDTO d)
         {
-            var existingDocument = _db.Documents.FirstOrDefault(document => document.ID == id);
+            var existingDocument = _db.Documents.FirstOrDefault(document => document.Id == id);
             if (existingDocument != null)
             {
                 existingDocument.DocumentType = d.documentType;
@@ -185,7 +185,7 @@ namespace NoteShareAPI.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
-            var existingDocument = _db.Documents.FirstOrDefault(document => document.ID == id);
+            var existingDocument = _db.Documents.FirstOrDefault(document => document.Id == id);
             if (existingDocument != null)
             {
                 _db.Documents.Remove(existingDocument);
