@@ -10,17 +10,15 @@ namespace NoteShareAPI.Models
         {
             var db = new NoteContext();
 
-            this.email = u.Email;
-            this.id = u.Id;
-            this.roles = new List<RoleDTO>();
-            this.subjects = new List<SubjectDTO>();
-            var userSubjects = db.UserSubjects.Where(us => us.UserId == u.Id).Select(us => us.Subject).ToList();
-            foreach (var subject in userSubjects)
-                this.subjects.Add(new SubjectDTO(subject));
+            email = u.Email;
+            id = u.Id;
+            subjects = db.UserSubjects.Where(us => us.UserId == u.Id).Select(us => new SubjectDTO(us.Subject)).ToList();
+            bookmarks = db.Bookmarks.Where(b => b.User.Id == u.Id).Select(b => b.Document).ToList();
 
+            roles = new List<RoleDTO>();
             var userRoles = db.UserRoles.Where(r => r.UserId == u.Id).ToList().Select(r => r.RoleId);
             foreach (var r in db.Roles.Where(role => userRoles.Contains(role.Id)).ToList())
-                this.roles.Add(new RoleDTO(r));
+                roles.Add(new RoleDTO(r));
         }
 
         public UserDTO() {}
@@ -29,5 +27,6 @@ namespace NoteShareAPI.Models
         public string email { get; set; }
         public List<SubjectDTO> subjects { get; set; }
         public List<RoleDTO> roles { get; set; }
+        public List<Document> bookmarks { get; set; }
     }
 }
