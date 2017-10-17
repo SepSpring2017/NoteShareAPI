@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
-using NoteShareAPI.Entities;
 
 namespace NoteShareAPI.Models
 {

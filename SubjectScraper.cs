@@ -1,7 +1,6 @@
 using IronWebScraper;
 using NoteShareAPI.Entities;
 using System.Text.RegularExpressions;
-using System;
 using System.Collections.Generic;
 
 namespace NoteShareAPI

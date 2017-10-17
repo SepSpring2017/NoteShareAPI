@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AspNet.Security.OAuth.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using NoteShareAPI.Entities;
 using NoteShareAPI.Models;
