@@ -14,6 +14,7 @@ using NoteShareAPI.Models;
 
 namespace NoteShareAPI.Controllers
 {
+    [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     public class DocumentsController : Controller
     {
@@ -50,8 +51,7 @@ namespace NoteShareAPI.Controllers
             subject = subject.ToLower();
             return Search(query).Where(d => d.subject.Name.ToLower().Contains(subject) || d.subject.SubjectId.ToString().Contains(subject));
         }
-
-        [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+        
         [HttpPost("bookmark")]
         public ActionResult BookmarkDocument(string id)
         {
@@ -73,8 +73,7 @@ namespace NoteShareAPI.Controllers
             db.SaveChanges();
             return Ok();
         }
-
-        [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+        
         [HttpPost("vote")]
         public ActionResult Vote(string documentId, bool isUpvote)
         {
@@ -103,22 +102,19 @@ namespace NoteShareAPI.Controllers
             db.SaveChanges();
             return Ok();
         }
-
-        [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+        
         [HttpPost("upvote")]
         public ActionResult UpVote(string documentId)
         {
             return Vote(documentId, true);
         }
-
-        [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+        
         [HttpPost("downvote")]
         public ActionResult DownVote(string documentId)
         {
             return Vote(documentId, false);
         }
-
-        // GET api/values/5
+        
         [HttpGet("{id}")]
         public ActionResult Get(string id)
         {
@@ -128,8 +124,6 @@ namespace NoteShareAPI.Controllers
             return NotFound(new { message = "No document found for that Id" });
         }
 
-        // POST api/values
-        [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
         [HttpPost]
         public async Task<ActionResult> Post(UploadModel upload)
         {
@@ -173,9 +167,7 @@ namespace NoteShareAPI.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
-        // PUT api/values/5
-        [Authorize]
+        
         [HttpPut("{id}")]
         public ActionResult Put(string id, DocumentDTO d)
         {
@@ -190,8 +182,6 @@ namespace NoteShareAPI.Controllers
             return BadRequest(new { message = "No document found for that Id" });
         }
 
-        // DELETE api/values/5
-        [Authorize]
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
