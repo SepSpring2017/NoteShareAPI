@@ -11,11 +11,11 @@ namespace NoteShareAPI.Models
 
         public SubjectDTO(Subject s)
         {
-            this.subjectId = s.SubjectId;
-            this.name = s.Name;
+            subjectId = s.SubjectId;
+            name = s.Name;
 
             var db = new NoteContext();
-            this.documentCount = db.Documents.Where(d => d.SubjectId == s.SubjectId).ToList().Count;
+            documentCount = db.Documents.Where(d => d.SubjectId == s.SubjectId).ToList().Count;
         }
     }
 }

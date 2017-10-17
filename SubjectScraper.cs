@@ -16,7 +16,7 @@ namespace NoteShareAPI
 
         public override void Init()
         {
-            this.Request("http://www.handbook.uts.edu.au/subjects/alpha.html", Parse);
+            Request("http://www.handbook.uts.edu.au/subjects/alpha.html", Parse);
         }
 
         public override void Parse(Response response)

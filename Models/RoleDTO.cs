@@ -6,8 +6,8 @@ namespace NoteShareAPI.Models
     {
         public RoleDTO(IdentityRole role)
         {
-            this.Id = role.Id;
-            this.Name = role.Name;
+            Id = role.Id;
+            Name = role.Name;
         }
 
         public string Id { get; set; }

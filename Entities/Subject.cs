@@ -13,12 +13,12 @@
             if (item == null)
                 return false;
             
-            return this.SubjectId == item.SubjectId;
+            return SubjectId == item.SubjectId;
         }
 
         public override int GetHashCode()
         {
-            return this.SubjectId.GetHashCode();
+            return SubjectId.GetHashCode();
         }
     }
 }

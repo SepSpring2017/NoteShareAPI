@@ -14,12 +14,12 @@ namespace NoteShareAPI.Models
 
         public DocumentDTO(Document d)
         {
-            this.documentName = d.DocumentName;
-            this.documentType = d.DocumentType;
-            this.subject = d.Subject;
-            this.fileName = d.FileName;
-            this.id = d.ID;
-            this.uploadDate = d.UploadDate;
+            documentName = d.DocumentName;
+            documentType = d.DocumentType;
+            subject = d.Subject;
+            fileName = d.FileName;
+            id = d.ID;
+            uploadDate = d.UploadDate;
         }
     }
 }
