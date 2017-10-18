@@ -16,6 +16,7 @@ namespace NoteShareAPI.Controllers
 {
     [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
+    [DisableRequestSizeLimit]
     public class DocumentsController : Controller
     {
         private readonly NoteContext _db;
