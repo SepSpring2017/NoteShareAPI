@@ -164,7 +164,7 @@ namespace NoteShareAPI.Controllers
                 }
                 return BadRequest(new { message = "You need to upload a document" });
             }
-            catch (Exception e)
+            catch (IOException e)
             {
                 return StatusCode(500, e.Message);
             }
